@@ -726,4 +726,92 @@ map-# JOIN language ON locale.language_code = language.code;
  Catalan           | Spain       | Spain
 (13 rows)
 
+map=# SELECT * FROM country;
+ id |    name     | population | last_status_change | code 
+----+-------------+------------+--------------------+------
+  2 | France      |   67413000 | 1958-10-04         | 
+  3 | Namibia     |    2550226 | 1990-03-21         | 
+  4 | Uruguay     |    3518552 | 1830-07-18         | 
+  5 | Kazakhstan  |   18711560 | 1995-08-30         | 
+  6 | Germany     |   83190556 | 1990-10-03         | DE
+  7 | France      |   67413000 | 1958-10-04         | FR
+  8 | Namibia     |    2550226 | 1990-03-21         | NA
+  9 | Uruguay     |    3518552 | 1830-07-18         | UY
+ 10 | Kazakhstan  |   18711560 | 1995-08-30         | KZ
+ 11 | Spain       |   47450795 | 1986-01-01         | ES
+ 12 | Switzerland |    8570146 | 1848-09-12         | CH
+ 13 | Austria     |    8935112 | 1995-01-01         | AT
+(12 rows)
+
+map=# SELECT * FROM locale;
+       name        | language_code | country_code 
+-------------------+---------------+--------------
+ German            | de            | DE
+ Austrian          | de            | AT
+ Swiss german      | de            | CH
+ French            | fr            | FR
+ Afrikaans         | af            | NA
+ English (Namibia) | en            | NA
+ LATAM Spanish     | es            | UY
+ Spanish           | es            | ES
+ Kazakh            | kk            | KZ
+ Russian           | ru            | KZ
+ Italian           | it            | CH
+ French            | fr            | CH
+ Catalan           | ca            | ES
+(13 rows)
+
+map=# SELECT * FROM langauage;
+ERROR:  relation "langauage" does not exist
+LINE 1: SELECT * FROM langauage;
+                      ^
+map=# SELECT * FROM language;
+ code |   name    
+------+-----------
+ en   | English
+ de   | German
+ fr   | French
+ af   | Afrikaans
+ es   | Spanish
+ kk   | Kazakh
+ ru   | Russian
+ it   | Italian
+ ca   | Catalan
+(9 rows)
+
+map=# SELECT locale.name AS Locale, country.name AS Country, language.name AS Language
+map-# FROM lacale JOIN country ON locale.country_code = country.code
+map-# JOIN language ON locale.language_code = language.code
+map-# ORDER BY DESC;
+ERROR:  syntax error at or near "DESC"
+LINE 4: ORDER BY DESC;
+                 ^
+map=# SELECT locale.name AS Locale, language.name AS Language, country.name AS Country
+map-# FROM locale JOIN country ON locale.country_code = country.code
+map-# JOIN language ON locale.language_code = language.code
+map-# ORDER BY language.name ABC;
+ERROR:  syntax error at or near "ABC"
+LINE 4: ORDER BY language.name ABC;
+                               ^
+map=# SELECT locale.name AS Locale, language.name AS Language, country.name AS Country
+FROM locale JOIN country ON locale.country_code = country.code
+JOIN language ON locale.language_code = language.code
+ORDER BY language.name ASC;
+      locale       | language  |   country   
+-------------------+-----------+-------------
+ Afrikaans         | Afrikaans | Namibia
+ Catalan           | Catalan   | Spain
+ English (Namibia) | English   | Namibia
+ French            | French    | France
+ French            | French    | Switzerland
+ Austrian          | German    | Austria
+ German            | German    | Germany
+ Swiss german      | German    | Switzerland
+ Italian           | Italian   | Switzerland
+ Kazakh            | Kazakh    | Kazakhstan
+ Russian           | Russian   | Kazakhstan
+ LATAM Spanish     | Spanish   | Uruguay
+ Spanish           | Spanish   | Spain
+(13 rows)
+
 map=# 
